@@ -225,6 +225,33 @@ export interface AttendanceView {
   source: string;
 }
 
+export interface PeerInfo {
+  node_id: string;
+  device_name: string;
+  address: string;
+  is_lan: boolean;
+  last_seen: number;
+  schema_version: number;
+}
+
+export interface SyncStatus {
+  node_id: string;
+  device_name: string;
+  is_listening: boolean;
+  lan_peer_count: number;
+  internet_connected: boolean;
+  pending_outbox_count: number;
+  last_sync_timestamp?: number;
+  active_peers: PeerInfo[];
+}
+
+export interface SyncConfig {
+  device_name: string;
+  lan_sync_enabled: boolean;
+  internet_sync_enabled: boolean;
+  relay_url?: string;
+}
+
 // API Client Methods with Full Alias & Signature Normalization
 export const api = {
   // Auth & User Management
@@ -863,4 +890,20 @@ export const api = {
     safeInvoke<boolean>("check_install_permission"),
   installAndroidApk: (filePath: string) =>
     safeInvoke<boolean>("install_android_apk", { filePath }),
+
+  // P2P & Gateway Sync Engine
+  getSyncStatus: () => safeInvoke<SyncStatus>("get_sync_status"),
+  triggerManualSync: () => safeInvoke<number>("trigger_manual_sync"),
+  configureSyncEndpoint: (config: {
+    deviceName?: string;
+    lanEnabled?: boolean;
+    internetEnabled?: boolean;
+    relayUrl?: string;
+  }) =>
+    safeInvoke<boolean>("configure_sync_endpoint", {
+      deviceName: config.deviceName,
+      lanEnabled: config.lanEnabled,
+      internetEnabled: config.internetEnabled,
+      relayUrl: config.relayUrl,
+    }),
 };

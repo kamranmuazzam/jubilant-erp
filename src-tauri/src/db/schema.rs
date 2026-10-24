@@ -348,10 +348,31 @@ CREATE TABLE IF NOT EXISTS outbox_events (
     retry_count INTEGER NOT NULL DEFAULT 0
 );
 
+-- 9. Audit Logging Trail
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id TEXT PRIMARY KEY,
+    user_id TEXT,
+    action TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    entity_id TEXT NOT NULL,
+    details_json TEXT,
+    created_at INTEGER NOT NULL
+);
+
+-- 10. Peer Network Registry
+CREATE TABLE IF NOT EXISTS sync_peers (
+    node_id TEXT PRIMARY KEY,
+    device_name TEXT NOT NULL,
+    address TEXT NOT NULL,
+    is_lan INTEGER NOT NULL DEFAULT 1,
+    last_seen INTEGER NOT NULL
+);
+
 -- High Performance Covering Indexes
 CREATE INDEX IF NOT EXISTS idx_journal_items_acc ON journal_items(account_id, debit_paisa, credit_paisa);
 CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(invoice_date, customer_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_wh ON inventory_stock(product_id, warehouse_id);
 CREATE INDEX IF NOT EXISTS idx_service_tickets ON service_requests(status, priority);
 CREATE INDEX IF NOT EXISTS idx_outbox_pending ON outbox_events(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action, created_at);
 "#;

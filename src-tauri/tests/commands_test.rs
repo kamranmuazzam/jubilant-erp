@@ -6,8 +6,9 @@ use uuid::Uuid;
 
 fn setup_test_app() -> tauri::App<tauri::test::MockRuntime> {
     let temp_dir = std::env::temp_dir().join(format!("test_erp_{}", Uuid::now_v7()));
-    let db_state = init_database(temp_dir).expect("Database initialization failed");
-    let app_state = AppState { db: db_state };
+    let db_state = init_database(temp_dir).expect("Failed to initialize database");
+    let sync_manager = std::sync::Arc::new(jubilant_erp_lib::sync::SyncManager::new(db_state.clone(), None));
+    let app_state = AppState { db: db_state, sync: sync_manager };
 
     let app = tauri::test::mock_app();
     app.manage(app_state);

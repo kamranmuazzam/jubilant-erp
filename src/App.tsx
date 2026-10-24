@@ -25,14 +25,43 @@ import {
   IconDatabase,
   IconSun,
   IconMoon,
+  IconSync,
 } from "./components/ui/Icons";
+import { SyncModal } from "./components/ui/SyncModal";
+import { CommandPalette } from "./components/ui/CommandPalette";
+import { api } from "./api/client";
 
 export default function App() {
   const [currentUser, setCurrentUser] = createSignal<UserProfile | null>(null);
   const [activeModule, setActiveModule] = createSignal<string>("summary");
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
+  const [isSyncModalOpen, setIsSyncModalOpen] = createSignal(false);
+  const [isCmdPaletteOpen, setIsCmdPaletteOpen] = createSignal(false);
+  const [peerCount, setPeerCount] = createSignal(0);
+
+  const checkSyncStatus = async () => {
+    try {
+      const res = await api.getSyncStatus();
+      setPeerCount(res.lan_peer_count + (res.internet_connected ? 1 : 0));
+    } catch {
+      // Offline fallback
+    }
+  };
 
   onMount(() => {
+    // Check initial sync status & poll
+    checkSyncStatus();
+    const syncInterval = setInterval(checkSyncStatus, 10000);
+
+    // Global Cmd+K / Ctrl+K listener
+    const handleGlobalKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCmdPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKey);
+
     // Restore Theme
     const savedTheme = localStorage.getItem("jubilant_theme") as "light" | "dark" | null;
     if (savedTheme) {
@@ -56,6 +85,11 @@ export default function App() {
         localStorage.removeItem("jubilant_user_session");
       }
     }
+
+    return () => {
+      clearInterval(syncInterval);
+      window.removeEventListener("keydown", handleGlobalKey);
+    };
   });
 
   const toggleTheme = () => {
@@ -86,7 +120,7 @@ export default function App() {
 
   // RBAC Permission Check
   const hasAccess = (moduleKey: string) => {
-    if (moduleKey === "summary") return true;
+    if (moduleKey === "summary" || moduleKey === "sync") return true;
     const user = currentUser();
     if (!user) return false;
     if (user.permissions.includes("*")) return true;
@@ -137,6 +171,7 @@ export default function App() {
       items: [
         { key: "hrm", label: "Staff & Attendance", icon: IconHRM },
         { key: "users", label: "User Management & RBAC", icon: IconShield },
+        { key: "sync", label: "Peer Sync & Network Hub", icon: IconSync },
       ],
     },
   ];
@@ -180,7 +215,13 @@ export default function App() {
                             <button
                               type="button"
                               class={`erp-nav-item ${isActive() ? "active" : ""}`}
-                              onClick={() => setActiveModule(item.key)}
+                              onClick={() => {
+                                if (item.key === "sync") {
+                                  setIsSyncModalOpen(true);
+                                } else {
+                                  setActiveModule(item.key);
+                                }
+                              }}
                             >
                               <IconComp size={15} />
                               <span>{item.label}</span>
@@ -228,24 +269,29 @@ export default function App() {
             </div>
 
             <div style={{ display: "flex", "align-items": "center", gap: "0.75rem" }}>
-              {/* Quick Search Input */}
-              <div class="erp-search-box">
+              {/* Quick Search Trigger / Command Palette */}
+              <button
+                type="button"
+                onClick={() => setIsCmdPaletteOpen(true)}
+                class="erp-search-box"
+                style={{ cursor: "pointer", "text-align": "left" }}
+                title="Search views and actions (⌘K / Ctrl+K)"
+              >
                 <IconSearch size={13} />
-                <input
-                  type="text"
-                  placeholder="Search invoices, vouchers, PAN..."
+                <span
                   style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: "0",
-                    outline: "none",
-                    color: "inherit",
+                    color: "var(--erp-text-secondary)",
                     "font-size": "inherit",
-                    width: "100%",
+                    flex: "1",
+                    "white-space": "nowrap",
+                    overflow: "hidden",
+                    "text-overflow": "ellipsis",
                   }}
-                />
+                >
+                  Search views, invoices, vouchers...
+                </span>
                 <span class="erp-search-shortcut">⌘K</span>
-              </div>
+              </button>
 
               {/* Theme Toggle Button */}
               <button
@@ -263,6 +309,26 @@ export default function App() {
               <div class="erp-badge erp-badge-neutral">
                 <span>FY 2081/82</span>
               </div>
+
+              {/* Peer Sync Hub Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setIsSyncModalOpen(true)}
+                class="erp-btn erp-btn-secondary erp-btn-sm"
+                title="Open Peer Sync & Local Mesh Network Hub"
+                style={{
+                  display: "flex",
+                  "align-items": "center",
+                  gap: "0.4rem",
+                  padding: "0.3rem 0.6rem",
+                  cursor: "pointer",
+                }}
+              >
+                <IconSync size={13} class={peerCount() > 0 ? "text-success" : ""} />
+                <span style={{ "font-size": "11.5px" }}>
+                  {peerCount() > 0 ? `${peerCount()} Peer${peerCount() > 1 ? "s" : ""} Active` : "Mesh Sync"}
+                </span>
+              </button>
 
               {/* System Status Indicator */}
               <div class="erp-badge erp-badge-success" title="Secure Local Storage Active">
@@ -330,6 +396,28 @@ export default function App() {
           </main>
         </div>
       </div>
+
+      {/* Peer Sync & Mesh Network Modal */}
+      <SyncModal
+        isOpen={isSyncModalOpen()}
+        onClose={() => setIsSyncModalOpen(false)}
+      />
+
+      {/* Global Command Palette */}
+      <CommandPalette
+        isOpen={isCmdPaletteOpen()}
+        onClose={() => setIsCmdPaletteOpen(false)}
+        onNavigate={(mod) => {
+          if (mod === "sync") {
+            setIsSyncModalOpen(true);
+          } else {
+            setActiveModule(mod);
+          }
+        }}
+        onOpenSync={() => setIsSyncModalOpen(true)}
+        onToggleTheme={toggleTheme}
+        onLockSession={handleLogout}
+      />
     </Show>
   );
 }

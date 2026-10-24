@@ -1,12 +1,15 @@
 pub mod commands;
 pub mod db;
 pub mod error;
+pub mod sync;
 
 use std::path::PathBuf;
+use std::sync::Arc;
 use tauri::Manager;
 
 pub struct AppState {
     pub db: db::DbState,
+    pub sync: Arc<sync::SyncManager>,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -23,10 +26,20 @@ pub fn run() {
                 .unwrap_or_else(|_| PathBuf::from("."));
 
             let db_state = db::init_database(app_dir).expect("Failed to initialize SQLite database");
-            app.manage(AppState { db: db_state });
+            let sync_manager = Arc::new(sync::SyncManager::new(db_state.clone(), None));
+            sync_manager.clone().start_background_workers();
+
+            app.manage(AppState {
+                db: db_state,
+                sync: sync_manager,
+            });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            // Peer-to-Peer & Serverless Sync
+            commands::sync_commands::get_sync_status,
+            commands::sync_commands::trigger_manual_sync,
+            commands::sync_commands::configure_sync_endpoint,
             // Auth & User Management
             commands::auth_commands::login_with_password,
             commands::auth_commands::login_with_pin,

@@ -25,6 +25,7 @@ import {
   IconAlert,
   IconTrendingUp,
   IconSearch,
+  IconSync,
 } from "../../ui/Icons";
 
 interface Props {
@@ -257,6 +258,15 @@ export function SummarySheetView(props: Props) {
           <button class="erp-button erp-button-secondary" onClick={loadData} title="Refresh data">
             <IconRefresh size={14} class={loading() ? "animate-spin" : ""} />
             <span>{loading() ? "Refreshing..." : lastRefreshed() ? `Synced ${lastRefreshed()}` : "Refresh"}</span>
+          </button>
+
+          <button
+            class="erp-button erp-button-secondary"
+            onClick={() => props.onNavigate("sync")}
+            title="Open P2P Mesh & Cloud Sync Hub"
+          >
+            <IconSync size={14} />
+            <span>Peer Sync</span>
           </button>
 
           <button class="erp-button erp-button-primary" onClick={handlePrint} title="Print executive summary">
