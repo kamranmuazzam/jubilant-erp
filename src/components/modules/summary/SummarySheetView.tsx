@@ -232,7 +232,7 @@ export function SummarySheetView(props: Props) {
               }}
             />
             <span style={{ "font-weight": "500", color: "var(--erp-text-secondary)" }}>
-              SQLite WAL Active
+              All Systems Operational
             </span>
           </div>
 
@@ -250,7 +250,7 @@ export function SummarySheetView(props: Props) {
           >
             <IconCheck size={13} class="text-success" />
             <span style={{ "font-weight": "500", color: "var(--erp-text-secondary)" }}>
-              Double-Entry Balanced (0 NPR Variance)
+              Ledgers Balanced & Reconciled
             </span>
           </div>
 
@@ -522,7 +522,7 @@ export function SummarySheetView(props: Props) {
                 Consolidated P&L & Cash Flow Sheet (आय-व्यय सारांश)
               </h2>
               <p style={{ "font-size": "12px", color: "var(--erp-text-secondary)" }}>
-                Nepal Accounting Standards (NAS) / NFRS Compliant • Integer Paisa Invariance
+                Nepal Accounting Standards (NAS) / NFRS Compliant • Audit Ready
               </p>
             </div>
             <button
@@ -815,7 +815,7 @@ export function SummarySheetView(props: Props) {
         </div>
 
         <div style={{ "font-size": "11.5px", color: "var(--erp-text-muted)" }}>
-          Jubilant ERP v1.0.0 • Embedded SQLite Serverless Architecture
+          Jubilant ERP v1.0.0 • Enterprise Edition
         </div>
       </div>
     </div>

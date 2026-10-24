@@ -116,7 +116,7 @@ export function LoginView(props: LoginViewProps) {
               Unified financial ledgers, statutory VAT & multi-godown logistics.
             </h2>
             <p style={{ "font-size": "13.5px", color: "var(--erp-text-secondary)", "line-height": "1.6" }}>
-              Secure offline-first architecture powered by embedded SQLite WAL mode. Perform double-entry bookkeeping, issue IRD Sales Books (अनुसूची १३), track technician AMC field operations, and manage payroll.
+              Enterprise resource planning for sales, purchases, warehouse inventory, technician field service, and staff payroll. Fully compliant with Nepal tax regulations and statutory IRD registers.
             </p>
           </div>
         </div>
@@ -125,7 +125,7 @@ export function LoginView(props: LoginViewProps) {
           <div style={{ display: "flex", "align-items": "center", gap: "1.5rem", "font-size": "12px", color: "var(--erp-text-muted)" }}>
             <div style={{ display: "flex", "align-items": "center", gap: "0.375rem" }}>
               <span style={{ width: "6px", height: "6px", "border-radius": "50%", background: "#059669" }}></span>
-              <span style={{ "font-weight": "600", color: "var(--erp-text-secondary)" }}>Embedded SQLite</span>
+              <span style={{ "font-weight": "600", color: "var(--erp-text-secondary)" }}>Secure Local Storage</span>
             </div>
             <div>Nepal VAT 13%</div>
             <div>Fiscal Year 2081/82</div>

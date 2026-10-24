@@ -544,7 +544,7 @@ export function UsersView() {
         <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
           <div class="erp-card" style={{ padding: "1.25rem" }}>
             <h3 style={{ "font-size": "1.05rem", "font-weight": "700", color: "var(--erp-text-main)", margin: "0 0 0.5rem 0" }}>
-              Spatie Role-Based Access Control (RBAC) Architecture
+              Role-Based Access Control (RBAC) Permissions Matrix
             </h3>
             <p style={{ "font-size": "12.5px", color: "var(--erp-text-secondary)", margin: 0, "line-height": 1.5 }}>
               Jubilant ERP strictly enforces multi-tier privilege separation according to Section 1 of the User Manual.

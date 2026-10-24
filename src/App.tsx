@@ -264,10 +264,18 @@ export default function App() {
                 <span>FY 2081/82</span>
               </div>
 
-              {/* DB Status Indicator */}
-              <div class="erp-badge erp-badge-success" title="Embedded SQLite WAL Mode Active">
-                <IconDatabase size={11} />
-                <span>SQLite WAL</span>
+              {/* System Status Indicator */}
+              <div class="erp-badge erp-badge-success" title="Secure Local Storage Active">
+                <span
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    "border-radius": "50%",
+                    background: "var(--erp-success)",
+                    display: "inline-block",
+                  }}
+                />
+                <span>System Online</span>
               </div>
             </div>
           </header>
