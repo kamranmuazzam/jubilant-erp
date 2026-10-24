@@ -214,7 +214,7 @@ export function HrmView() {
     }
   };
 
-  const totalPayrollPaisa = () => employees().reduce((acc, e) => acc + e.salary_paisa, 0);
+  const totalPayrollPaisa = () => employees().reduce((acc, e) => acc + (e.basic_salary_paisa || (e as any).salary_paisa || 0), 0);
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", gap: "1.25rem" }}>
@@ -447,7 +447,7 @@ export function HrmView() {
                       </td>
                       <td style={{ color: "var(--erp-text-secondary)" }}>{emp.designation}</td>
                       <td class="tabular-nums" style={{ "text-align": "right", "font-weight": "600" }}>
-                        {formatNpr(emp.salary_paisa)}
+                        {formatNpr(emp.basic_salary_paisa || (emp as any).salary_paisa || 0)}
                       </td>
                       <td class="tabular-nums" style={{ color: "var(--erp-text-muted)" }}>
                         {emp.bank_account_no || "Nabil Bank (On File)"}

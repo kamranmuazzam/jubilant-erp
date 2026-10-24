@@ -34,6 +34,9 @@ tauri-plugin-updater = "2"
 jni = "0.21"
 ndk-context = "0.1"
 
+[dev-dependencies]
+tauri = { version = "2", features = ["test"] }
+
 [profile.release]
 codegen-units = 1
 lto = true
