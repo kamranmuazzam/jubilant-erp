@@ -1,0 +1,27 @@
+# Node / Web dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Rust / Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/
+
+# Local databases and temporary SQLite files
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.keystore
+
+# OS files
+.DS_Store
+Thumbs.db

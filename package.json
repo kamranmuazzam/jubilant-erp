@@ -1,0 +1,27 @@
+{
+  "name": "jubilant-erp",
+  "version": "1.0.0",
+  "description": "Jubilant ERP - Cross-Platform Serverless Enterprise Solution",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "tauri": "tauri"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@tauri-apps/api": "^2.2.0",
+    "@tauri-apps/plugin-opener": "^2.2.5",
+    "@tauri-apps/plugin-os": "^2.2.0",
+    "@tauri-apps/plugin-updater": "^2.5.0",
+    "solid-js": "^1.9.3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.2.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-solid": "^2.11.0"
+  }
+}

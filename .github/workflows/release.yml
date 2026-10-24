@@ -1,0 +1,137 @@
+name: Build, Sign, and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger workflow on version tags (e.g., v1.0.0)
+
+permissions:
+  contents: write
+
+jobs:
+  build-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            target: 'desktop'
+          - platform: 'windows-latest'
+            target: 'desktop'
+          - platform: 'ubuntu-latest'
+            target: 'android'
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target == 'android' && 'aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android' || '' }}
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri'
+
+      - name: Install Ubuntu dependencies (Linux Desktop if needed)
+        if: matrix.platform == 'ubuntu-latest' && matrix.target != 'android'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Setup Java (Android only)
+        if: matrix.target == 'android'
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install NDK (Android only)
+        if: matrix.target == 'android'
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26b
+          add-to-path: false
+
+      - name: Set Android Environment Variables
+        if: matrix.target == 'android'
+        run: |
+          echo "NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=${{ steps.setup-ndk.outputs.ndk-path }}" >> $GITHUB_ENV
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Init Android Project (Android only)
+        if: matrix.target == 'android'
+        run: |
+          npm run tauri android init
+          if [ -f "src-tauri/gen/android/app/src/main/AndroidManifest.xml" ]; then
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />\n    <uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />' src-tauri/gen/android/app/src/main/AndroidManifest.xml || true
+          fi
+
+      # Build Mac & Windows
+      - name: Build Desktop App
+        if: matrix.target == 'desktop'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Jubilant ERP ${{ github.ref_name }}'
+          releaseBody: 'Cross-platform serverless release for macOS, Windows, and Android.'
+          releaseDraft: true
+          prerelease: false
+          uploadUpdaterJson: true
+          updaterJsonPreferNsis: true
+
+      # Build Android APK
+      - name: Build Android APK
+        if: matrix.target == 'android'
+        run: npm run tauri android build -- --apk
+
+      # Sign the unsigned APK
+      - name: Sign APK
+        if: matrix.target == 'android'
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: src-tauri/gen/android/app/build/outputs/apk/universal/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+
+      # Upload Signed APK to Release
+      - name: Upload APK to Release
+        if: matrix.target == 'android'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          draft: true
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-release:
+    needs: build-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish Release
+        run: |
+          gh release edit "${{ github.ref_name }}" --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
