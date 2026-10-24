@@ -598,7 +598,7 @@ export function UsersView() {
       {/* ================= MODAL: CREATE USER ================= */}
       <Show when={showCreateModal()}>
         <div class="erp-modal-overlay">
-          <div class="erp-modal-content" style={{ "max-width": "500px" }}>
+          <div class="erp-modal" style={{ "max-width": "500px" }}>
             <div class="erp-modal-header">
               <div style={{ display: "flex", "align-items": "center", gap: "0.5rem" }}>
                 <IconShield size={18} />
@@ -739,7 +739,7 @@ export function UsersView() {
       {/* ================= MODAL: EDIT USER ================= */}
       <Show when={showEditModal()}>
         <div class="erp-modal-overlay">
-          <div class="erp-modal-content" style={{ "max-width": "480px" }}>
+          <div class="erp-modal" style={{ "max-width": "480px" }}>
             <div class="erp-modal-header">
               <div style={{ display: "flex", "align-items": "center", gap: "0.5rem" }}>
                 <IconEdit size={16} />
@@ -857,7 +857,7 @@ export function UsersView() {
       {/* ================= MODAL: RESET PASSWORD / PIN ================= */}
       <Show when={showResetModal()}>
         <div class="erp-modal-overlay">
-          <div class="erp-modal-content" style={{ "max-width": "450px" }}>
+          <div class="erp-modal" style={{ "max-width": "450px" }}>
             <div class="erp-modal-header">
               <div style={{ display: "flex", "align-items": "center", gap: "0.5rem" }}>
                 <IconKey size={16} />

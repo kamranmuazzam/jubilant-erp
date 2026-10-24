@@ -75,110 +75,137 @@ export function SyncModal(props: SyncModalProps): JSX.Element {
   return (
     <Show when={props.isOpen}>
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
+        class="erp-modal-overlay"
         onClick={(e) => {
           if (e.target === e.currentTarget) props.onClose();
         }}
       >
-        <div
-          class="w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-card,#ffffff)] text-[var(--text-main,#2d2820)]"
-          style={{ "font-family": "var(--font-sans, system-ui, sans-serif)" }}
-        >
+        <div class="erp-modal" style={{ "max-width": "640px" }}>
           {/* Header */}
-          <div class="px-6 py-5 border-b border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] flex items-center justify-between bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-[var(--color-primary,#8b6f4e)]/10 text-[var(--color-primary,#8b6f4e)] flex items-center justify-center">
-                <IconSync size={20} class={isSyncing() ? "animate-spin" : ""} />
+          <div class="erp-modal-header">
+            <div style={{ display: "flex", "align-items": "center", gap: "0.75rem" }}>
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  "border-radius": "8px",
+                  background: "var(--erp-primary-faint)",
+                  color: "var(--erp-primary)",
+                  display: "flex",
+                  "align-items": "center",
+                  "justify-content": "center",
+                }}
+              >
+                <IconSync size={18} class={isSyncing() ? "animate-spin" : ""} />
               </div>
               <div>
-                <h3 class="text-base font-semibold tracking-tight text-[var(--text-main,#2d2820)]">
-                  Peer Sync & Network Hub
-                </h3>
-                <p class="text-xs text-[var(--text-muted,#7a7267)]">
-                  Local-area peer discovery & cloud relay synchronization
-                </p>
+                <div class="erp-modal-title">Peer Sync & Network Hub</div>
+                <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)" }}>
+                  Local LAN discovery & internet cloud relay
+                </div>
               </div>
             </div>
             <button
+              type="button"
+              class="erp-modal-close"
               onClick={props.onClose}
-              class="text-[var(--text-muted,#7a7267)] hover:text-[var(--text-main,#2d2820)] p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               title="Close"
             >
               ✕
             </button>
           </div>
 
-          <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+          <div class="erp-modal-body" style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
             {/* Status Overview Cards */}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div class="p-4 rounded-xl border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-                <div class="flex items-center justify-between text-xs text-[var(--text-muted,#7a7267)] mb-1">
-                  <span>Local Mesh Peers</span>
-                  <IconWifi size={14} class="text-[var(--color-primary,#8b6f4e)]" />
+            <div style={{ display: "grid", "grid-template-columns": "repeat(auto-fit, minmax(160px, 1fr))", gap: "0.625rem" }}>
+              <div class="erp-card" style={{ padding: "0.75rem 1rem" }}>
+                <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between", "font-size": "11px", color: "var(--erp-text-secondary)", "margin-bottom": "0.25rem" }}>
+                  <span>Local Mesh</span>
+                  <IconWifi size={13} />
                 </div>
-                <div class="text-xl font-bold text-[var(--text-main,#2d2820)]">
+                <div style={{ "font-size": "18px", "font-weight": "700", color: "var(--erp-text-main)" }}>
                   {status()?.lan_peer_count ?? 0}{" "}
-                  <span class="text-xs font-normal text-[var(--text-muted,#7a7267)]">
-                    active
-                  </span>
+                  <span style={{ "font-size": "11px", "font-weight": "normal", color: "var(--erp-text-secondary)" }}>active</span>
                 </div>
-                <div class="text-[11px] text-[var(--text-muted,#7a7267)] mt-1">
-                  Port 49152 (UDP) / 49153 (TCP)
+                <div style={{ "font-size": "10.5px", color: "var(--erp-text-muted)", "margin-top": "0.2rem" }}>
+                  UDP 49152 / TCP 49153
                 </div>
               </div>
 
-              <div class="p-4 rounded-xl border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-                <div class="flex items-center justify-between text-xs text-[var(--text-muted,#7a7267)] mb-1">
+              <div class="erp-card" style={{ padding: "0.75rem 1rem" }}>
+                <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between", "font-size": "11px", color: "var(--erp-text-secondary)", "margin-bottom": "0.25rem" }}>
                   <span>Cloud Relay</span>
-                  <IconCloud size={14} class="text-[var(--color-primary,#8b6f4e)]" />
+                  <IconCloud size={13} />
                 </div>
-                <div class="text-xl font-bold text-[var(--text-main,#2d2820)] flex items-center gap-1.5">
+                <div style={{ "font-size": "15px", "font-weight": "700", color: "var(--erp-text-main)", display: "flex", "align-items": "center", gap: "0.375rem" }}>
                   <span
-                    class={`inline-block w-2 h-2 rounded-full ${
-                      status()?.internet_connected ? "bg-emerald-500" : "bg-amber-400"
-                    }`}
+                    style={{
+                      width: "8px",
+                      height: "8px",
+                      "border-radius": "50%",
+                      background: status()?.internet_connected ? "#059669" : "#d97706",
+                      display: "inline-block",
+                    }}
                   />
-                  <span class="text-sm font-semibold">
-                    {status()?.internet_connected ? "Connected" : "Standby"}
-                  </span>
+                  <span>{status()?.internet_connected ? "Connected" : "Standby"}</span>
                 </div>
-                <div class="text-[11px] text-[var(--text-muted,#7a7267)] mt-1">
+                <div style={{ "font-size": "10.5px", color: "var(--erp-text-muted)", "margin-top": "0.2rem" }}>
                   Automated fallback
                 </div>
               </div>
 
-              <div class="p-4 rounded-xl border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-                <div class="flex items-center justify-between text-xs text-[var(--text-muted,#7a7267)] mb-1">
+              <div class="erp-card" style={{ padding: "0.75rem 1rem" }}>
+                <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between", "font-size": "11px", color: "var(--erp-text-secondary)", "margin-bottom": "0.25rem" }}>
                   <span>Pending Outbox</span>
-                  <IconServer size={14} class="text-[var(--color-primary,#8b6f4e)]" />
+                  <IconServer size={13} />
                 </div>
-                <div class="text-xl font-bold text-[var(--text-main,#2d2820)]">
+                <div style={{ "font-size": "18px", "font-weight": "700", color: "var(--erp-text-main)" }}>
                   {status()?.pending_outbox_count ?? 0}{" "}
-                  <span class="text-xs font-normal text-[var(--text-muted,#7a7267)]">
-                    changes
-                  </span>
+                  <span style={{ "font-size": "11px", "font-weight": "normal", color: "var(--erp-text-secondary)" }}>changes</span>
                 </div>
-                <div class="text-[11px] text-[var(--text-muted,#7a7267)] mt-1">
-                  Bounded 50-chunk CDC
+                <div style={{ "font-size": "10.5px", color: "var(--erp-text-muted)", "margin-top": "0.2rem" }}>
+                  Bounded CDC
                 </div>
               </div>
             </div>
 
             {/* Notification Feedback */}
             <Show when={feedbackMsg()}>
-              <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2">
-                <IconCheck size={14} class="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <div
+                style={{
+                  padding: "0.625rem 0.75rem",
+                  "border-radius": "var(--erp-radius-sm)",
+                  background: "var(--erp-success-bg, rgba(5, 150, 105, 0.1))",
+                  border: "1px solid var(--erp-success)",
+                  color: "var(--erp-success)",
+                  "font-size": "12px",
+                  display: "flex",
+                  "align-items": "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <IconCheck size={14} />
                 <span>{feedbackMsg()}</span>
               </div>
             </Show>
 
             {/* Manual Sync Bar */}
-            <div class="flex items-center justify-between p-4 rounded-xl bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714] border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a]">
+            <div
+              class="erp-card"
+              style={{
+                padding: "0.75rem 1rem",
+                display: "flex",
+                "align-items": "center",
+                "justify-content": "space-between",
+                gap: "0.75rem",
+                "flex-wrap": "wrap",
+              }}
+            >
               <div>
-                <div class="text-xs font-semibold text-[var(--text-main,#2d2820)]">
+                <div style={{ "font-size": "12.5px", "font-weight": "600", color: "var(--erp-text-main)" }}>
                   Instant Manual Replication
                 </div>
-                <div class="text-[11px] text-[var(--text-muted,#7a7267)]">
+                <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)" }}>
                   {status()?.last_sync_timestamp
                     ? `Last synchronized: ${new Date(
                         status()!.last_sync_timestamp! * 1000
@@ -190,7 +217,8 @@ export function SyncModal(props: SyncModalProps): JSX.Element {
                 type="button"
                 onClick={handleManualSync}
                 disabled={isSyncing()}
-                class="px-4 py-2 rounded-xl bg-[var(--color-primary,#8b6f4e)] text-white hover:opacity-90 font-medium text-xs flex items-center gap-2 shadow-sm disabled:opacity-50 transition-all cursor-pointer"
+                class="erp-btn erp-btn-primary erp-btn-sm"
+                style={{ cursor: "pointer", "white-space": "nowrap" }}
               >
                 <IconSync size={13} class={isSyncing() ? "animate-spin" : ""} />
                 <span>{isSyncing() ? "Reconciling..." : "Sync Now"}</span>
@@ -199,43 +227,49 @@ export function SyncModal(props: SyncModalProps): JSX.Element {
 
             {/* Active Mesh Peers List */}
             <div>
-              <div class="flex items-center justify-between mb-2">
-                <div class="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted,#7a7267)]">
-                  Discovered Local & Cloud Peers
+              <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between", "margin-bottom": "0.375rem" }}>
+                <div style={{ "font-size": "11px", "font-weight": "600", "text-transform": "uppercase", color: "var(--erp-text-secondary)", "letter-spacing": "0.04em" }}>
+                  Discovered Peers
                 </div>
-                <span class="text-[11px] text-[var(--text-muted,#7a7267)]">
+                <span style={{ "font-size": "11px", color: "var(--erp-text-muted)" }}>
                   {(status()?.active_peers?.length ?? 0)} peer(s) in reach
                 </span>
               </div>
 
-              <div class="border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] rounded-xl overflow-hidden divide-y divide-[var(--border-subtle,#e8e4dc)] dark:divide-[#38332a]">
+              <div class="erp-card" style={{ overflow: "hidden" }}>
                 <Show
                   when={(status()?.active_peers?.length ?? 0) > 0}
                   fallback={
-                    <div class="p-6 text-center text-xs text-[var(--text-muted,#7a7267)]">
+                    <div style={{ padding: "1.25rem", "text-align": "center", "font-size": "12px", color: "var(--erp-text-secondary)" }}>
                       Listening on LAN. Other Jubilant ERP devices on this Wi-Fi / network will appear automatically.
                     </div>
                   }
                 >
                   <For each={status()?.active_peers}>
                     {(peer: PeerInfo) => (
-                      <div class="p-3.5 flex items-center justify-between hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors">
-                        <div class="flex items-center gap-3">
-                          <div class="w-8 h-8 rounded-lg bg-[var(--color-primary,#8b6f4e)]/10 text-[var(--color-primary,#8b6f4e)] flex items-center justify-center font-bold text-xs">
+                      <div
+                        style={{
+                          padding: "0.625rem 0.875rem",
+                          display: "flex",
+                          "align-items": "center",
+                          "justify-content": "space-between",
+                          "border-bottom": "1px solid var(--erp-border-subtle)",
+                        }}
+                      >
+                        <div style={{ display: "flex", "align-items": "center", gap: "0.75rem" }}>
+                          <span class="erp-badge erp-badge-neutral" style={{ "font-weight": "700" }}>
                             {peer.is_lan ? "LAN" : "WAN"}
-                          </div>
+                          </span>
                           <div>
-                            <div class="text-xs font-semibold text-[var(--text-main,#2d2820)]">
+                            <div style={{ "font-size": "12.5px", "font-weight": "600", color: "var(--erp-text-main)" }}>
                               {peer.device_name}
                             </div>
-                            <div class="text-[11px] text-[var(--text-muted,#7a7267)] font-mono">
+                            <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)", "font-family": "var(--font-mono)" }}>
                               {peer.address} • Schema v{peer.schema_version}
                             </div>
                           </div>
                         </div>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                          Verified Peer
-                        </span>
+                        <span class="erp-badge erp-badge-success">Verified</span>
                       </div>
                     )}
                   </For>
@@ -244,77 +278,73 @@ export function SyncModal(props: SyncModalProps): JSX.Element {
             </div>
 
             {/* Device Identity & Configuration */}
-            <form onSubmit={handleSaveSettings} class="space-y-4 pt-2 border-t border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a]">
-              <div class="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted,#7a7267)]">
+            <form onSubmit={handleSaveSettings} style={{ display: "flex", "flex-direction": "column", gap: "0.75rem", "border-top": "1px solid var(--erp-border-subtle)", "padding-top": "0.75rem" }}>
+              <div style={{ "font-size": "11px", "font-weight": "600", "text-transform": "uppercase", color: "var(--erp-text-secondary)", "letter-spacing": "0.04em" }}>
                 Terminal Identity & Gateway Config
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-medium text-[var(--text-muted,#7a7267)] mb-1">
-                    Terminal Display Name
-                  </label>
+              <div style={{ display: "grid", "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.75rem" }}>
+                <div class="erp-form-group">
+                  <label class="erp-label">Terminal Display Name</label>
                   <input
                     type="text"
                     value={deviceName()}
                     onInput={(e) => setDeviceName(e.currentTarget.value)}
-                    class="w-full px-3 py-2 text-xs rounded-lg border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714] text-[var(--text-main,#2d2820)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary,#8b6f4e)]"
+                    class="erp-input"
                     placeholder="e.g. Kathmandu Head Office POS-1"
                   />
                 </div>
 
-                <div>
-                  <label class="block text-xs font-medium text-[var(--text-muted,#7a7267)] mb-1">
-                    Unique Node Fingerprint
-                  </label>
+                <div class="erp-form-group">
+                  <label class="erp-label">Unique Node Fingerprint</label>
                   <input
                     type="text"
                     disabled
                     value={status()?.node_id ?? "Loading..."}
-                    class="w-full px-3 py-2 text-xs rounded-lg border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-black/5 dark:bg-white/5 text-[var(--text-muted,#7a7267)] font-mono cursor-not-allowed"
+                    class="erp-input"
+                    style={{ background: "var(--erp-bg-card-subtle)", "font-family": "var(--font-mono)" }}
                   />
                 </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-medium text-[var(--text-muted,#7a7267)] mb-1">
-                  Remote Cloud Gateway URL (Fallback)
-                </label>
+              <div class="erp-form-group">
+                <label class="erp-label">Remote Cloud Gateway URL (Fallback)</label>
                 <input
                   type="text"
                   value={relayUrl()}
                   onInput={(e) => setRelayUrl(e.currentTarget.value)}
-                  class="w-full px-3 py-2 text-xs rounded-lg border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714] text-[var(--text-main,#2d2820)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary,#8b6f4e)]"
+                  class="erp-input"
                   placeholder="https://sync.jubilant.com.np"
                 />
               </div>
 
-              <div class="flex items-center justify-between pt-2">
-                <div class="flex items-center gap-4 text-xs">
-                  <label class="flex items-center gap-2 cursor-pointer">
+              <div style={{ display: "flex", "align-items": "center", "justify-content": "space-between", "flex-wrap": "wrap", gap: "0.75rem", "margin-top": "0.25rem" }}>
+                <div style={{ display: "flex", "align-items": "center", gap: "1rem", "font-size": "12px", color: "var(--erp-text-secondary)" }}>
+                  <label style={{ display: "flex", "align-items": "center", gap: "0.375rem", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={lanEnabled()}
                       onChange={(e) => setLanEnabled(e.currentTarget.checked)}
-                      class="rounded text-[var(--color-primary,#8b6f4e)]"
+                      style={{ width: "auto" }}
                     />
-                    <span>LAN Mesh Discovery</span>
+                    <span>LAN Mesh</span>
                   </label>
-                  <label class="flex items-center gap-2 cursor-pointer">
+                  <label style={{ display: "flex", "align-items": "center", gap: "0.375rem", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={internetEnabled()}
                       onChange={(e) => setInternetEnabled(e.currentTarget.checked)}
-                      class="rounded text-[var(--color-primary,#8b6f4e)]"
+                      style={{ width: "auto" }}
                     />
-                    <span>Cloud Gateway Sync</span>
+                    <span>Cloud Gateway</span>
                   </label>
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSaving()}
-                  class="px-4 py-2 text-xs font-medium rounded-lg bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#25201b] border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] text-[var(--text-main,#2d2820)] hover:border-[var(--color-primary,#8b6f4e)] transition-colors cursor-pointer"
+                  class="erp-btn erp-btn-secondary erp-btn-sm"
+                  style={{ cursor: "pointer" }}
                 >
                   {isSaving() ? "Saving..." : "Save Identity"}
                 </button>

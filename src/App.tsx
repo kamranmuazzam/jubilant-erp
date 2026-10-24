@@ -37,6 +37,7 @@ export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
   const [isSyncModalOpen, setIsSyncModalOpen] = createSignal(false);
   const [isCmdPaletteOpen, setIsCmdPaletteOpen] = createSignal(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = createSignal(false);
   const [peerCount, setPeerCount] = createSignal(0);
 
   const checkSyncStatus = async () => {
@@ -187,15 +188,41 @@ export default function App() {
   return (
     <Show when={currentUser()} fallback={<LoginView onLoginSuccess={handleLogin} />}>
       <div class="erp-app-shell">
+        {/* Mobile Backdrop Overlay */}
+        <Show when={isMobileMenuOpen()}>
+          <div
+            class="erp-mobile-backdrop"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        </Show>
+
         {/* Executive Sidebar Navigation */}
-        <aside class="erp-sidebar">
+        <aside class={`erp-sidebar ${isMobileMenuOpen() ? "mobile-open" : ""}`}>
           {/* Brand Logo & Name */}
           <div class="erp-sidebar-brand">
             <div class="erp-brand-badge">J</div>
-            <div style={{ "min-width": 0 }}>
+            <div style={{ "min-width": 0, flex: "1" }}>
               <div style={{ "font-weight": "700", "font-size": "13.5px", "color": "var(--erp-text-main)" }}>Jubilant ERP</div>
               <div style={{ "font-size": "11px", "color": "var(--erp-text-secondary)" }}>Kathmandu Branch</div>
             </div>
+            {/* Close Button on Mobile Drawer */}
+            <button
+              type="button"
+              class="erp-mobile-close-btn"
+              onClick={() => setIsMobileMenuOpen(false)}
+              title="Close menu"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Mobile Drawer Status Strip (Shows fiscal year & online state on phone) */}
+          <div class="erp-drawer-status-strip">
+            <span class="erp-badge erp-badge-neutral" style={{ "font-size": "10.5px" }}>FY 2081/82</span>
+            <span class="erp-badge erp-badge-success" style={{ "font-size": "10.5px", display: "inline-flex", "align-items": "center", gap: "0.3rem" }}>
+              <span style={{ width: "5px", height: "5px", "border-radius": "50%", background: "var(--erp-success)", display: "inline-block" }} />
+              <span>Online</span>
+            </span>
           </div>
 
           {/* Nav Categories */}
@@ -216,6 +243,7 @@ export default function App() {
                               type="button"
                               class={`erp-nav-item ${isActive() ? "active" : ""}`}
                               onClick={() => {
+                                setIsMobileMenuOpen(false);
                                 if (item.key === "sync") {
                                   setIsSyncModalOpen(true);
                                 } else {
@@ -262,10 +290,27 @@ export default function App() {
         <div class="erp-main-area">
           {/* Topbar with Breadcrumbs, Search, Theme Toggle and DB Status */}
           <header class="erp-topbar">
-            <div class="erp-breadcrumb">
-              <span style={{ "font-size": "12px", color: "var(--erp-text-muted)" }}>Jubilant</span>
-              <span style={{ color: "var(--erp-border-medium)" }}>/</span>
-              <span class="erp-breadcrumb-current">{currentModuleTitle()}</span>
+            <div style={{ display: "flex", "align-items": "center", gap: "0.5rem" }}>
+              {/* Mobile Hamburger Menu Toggle Button */}
+              <button
+                type="button"
+                class="erp-mobile-menu-btn"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen())}
+                title="Toggle Menu"
+                aria-label="Toggle navigation menu"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+
+              <div class="erp-breadcrumb">
+                <span class="erp-breadcrumb-prefix" style={{ "font-size": "12px", color: "var(--erp-text-muted)" }}>Jubilant</span>
+                <span class="erp-breadcrumb-sep" style={{ color: "var(--erp-border-medium)" }}>/</span>
+                <span class="erp-breadcrumb-current">{currentModuleTitle()}</span>
+              </div>
             </div>
 
             <div style={{ display: "flex", "align-items": "center", gap: "0.75rem" }}>
@@ -279,6 +324,7 @@ export default function App() {
               >
                 <IconSearch size={13} />
                 <span
+                  class="erp-search-placeholder"
                   style={{
                     color: "var(--erp-text-secondary)",
                     "font-size": "inherit",
@@ -296,17 +342,17 @@ export default function App() {
               {/* Theme Toggle Button */}
               <button
                 type="button"
-                class="erp-btn erp-btn-secondary erp-btn-sm"
+                class="erp-btn erp-btn-secondary erp-btn-sm erp-header-theme-btn"
                 onClick={toggleTheme}
                 title={`Switch to ${theme() === "light" ? "Dark" : "Light"} Mode`}
                 style={{ padding: "0.3rem 0.5rem" }}
               >
                 {theme() === "light" ? <IconMoon size={13} /> : <IconSun size={13} />}
-                <span style={{ "font-size": "11.5px" }}>{theme() === "light" ? "Dark" : "Light"}</span>
+                <span class="erp-header-theme-label" style={{ "font-size": "11.5px" }}>{theme() === "light" ? "Dark" : "Light"}</span>
               </button>
 
               {/* Fiscal Year Pill */}
-              <div class="erp-badge erp-badge-neutral">
+              <div class="erp-badge erp-badge-neutral erp-header-fy-badge">
                 <span>FY 2081/82</span>
               </div>
 
@@ -314,7 +360,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setIsSyncModalOpen(true)}
-                class="erp-btn erp-btn-secondary erp-btn-sm"
+                class="erp-btn erp-btn-secondary erp-btn-sm erp-header-sync-btn"
                 title="Open Peer Sync & Local Mesh Network Hub"
                 style={{
                   display: "flex",
@@ -325,13 +371,13 @@ export default function App() {
                 }}
               >
                 <IconSync size={13} class={peerCount() > 0 ? "text-success" : ""} />
-                <span style={{ "font-size": "11.5px" }}>
+                <span class="erp-header-sync-label" style={{ "font-size": "11.5px" }}>
                   {peerCount() > 0 ? `${peerCount()} Peer${peerCount() > 1 ? "s" : ""} Active` : "Mesh Sync"}
                 </span>
               </button>
 
               {/* System Status Indicator */}
-              <div class="erp-badge erp-badge-success" title="Secure Local Storage Active">
+              <div class="erp-badge erp-badge-success erp-header-status-badge" title="Secure Local Storage Active">
                 <span
                   style={{
                     width: "6px",
@@ -394,6 +440,58 @@ export default function App() {
               </Match>
             </Switch>
           </main>
+
+          {/* Mobile Bottom Navigation Bar (Thumb Zone) */}
+          <nav class="erp-bottom-nav">
+            <button
+              type="button"
+              class={`erp-bottom-nav-item ${activeModule() === "summary" ? "active" : ""}`}
+              onClick={() => { setActiveModule("summary"); setIsMobileMenuOpen(false); }}
+            >
+              <IconDashboard size={18} />
+              <span>Summary</span>
+            </button>
+
+            <button
+              type="button"
+              class={`erp-bottom-nav-item ${activeModule() === "sales" ? "active" : ""}`}
+              onClick={() => { setActiveModule("sales"); setIsMobileMenuOpen(false); }}
+            >
+              <IconSales size={18} />
+              <span>Sales</span>
+            </button>
+
+            <button
+              type="button"
+              class={`erp-bottom-nav-item ${activeModule() === "field_service" ? "active" : ""}`}
+              onClick={() => { setActiveModule("field_service"); setIsMobileMenuOpen(false); }}
+            >
+              <IconFieldService size={18} />
+              <span>Service</span>
+            </button>
+
+            <button
+              type="button"
+              class={`erp-bottom-nav-item ${activeModule() === "inventory" ? "active" : ""}`}
+              onClick={() => { setActiveModule("inventory"); setIsMobileMenuOpen(false); }}
+            >
+              <IconInventory size={18} />
+              <span>Stock</span>
+            </button>
+
+            <button
+              type="button"
+              class={`erp-bottom-nav-item ${isMobileMenuOpen() ? "active" : ""}`}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen())}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="1.5"></circle>
+                <circle cx="19" cy="12" r="1.5"></circle>
+                <circle cx="5" cy="12" r="1.5"></circle>
+              </svg>
+              <span>More</span>
+            </button>
+          </nav>
         </div>
       </div>
 

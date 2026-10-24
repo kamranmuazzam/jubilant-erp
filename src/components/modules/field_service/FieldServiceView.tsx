@@ -221,10 +221,10 @@ export function FieldServiceView() {
         </div>
       </div>
 
-      {/* Two-Column Master/Detail Layout */}
-      <div style={{ display: "grid", "grid-template-columns": "380px 1fr", gap: "1.25rem", flex: 1, "min-height": "480px" }}>
+      {/* Master/Detail Layout (Adaptive for Android & Desktop) */}
+      <div class="erp-service-master-detail">
         {/* Ticket List Pane */}
-        <div class="erp-card" style={{ display: "flex", "flex-direction": "column" }}>
+        <div class={`erp-card erp-service-list-pane ${selectedTicket() ? "mobile-hide" : ""}`} style={{ display: "flex", "flex-direction": "column" }}>
           <div class="erp-card-header">
             <div class="erp-card-title">Service Requests</div>
             <div class="erp-badge erp-badge-neutral">{requests().length}</div>
@@ -287,7 +287,7 @@ export function FieldServiceView() {
         </div>
 
         {/* Ticket Detail & Workflow Execution Pane */}
-        <div class="erp-card" style={{ display: "flex", "flex-direction": "column" }}>
+        <div class={`erp-card erp-service-detail-pane ${!selectedTicket() ? "mobile-hide" : ""}`} style={{ display: "flex", "flex-direction": "column" }}>
           <Show
             when={selectedTicket()}
             fallback={
@@ -298,9 +298,21 @@ export function FieldServiceView() {
           >
             {(ticket) => (
               <>
+                {/* Mobile Back Button (Visible only on mobile screen) */}
+                <div class="erp-service-mobile-back" style={{ display: "none" }}>
+                  <button
+                    type="button"
+                    class="erp-btn erp-btn-secondary erp-btn-sm"
+                    onClick={() => setSelectedTicket(null)}
+                    style={{ "margin": "0.75rem 0.75rem 0", display: "inline-flex", "align-items": "center", gap: "0.25rem" }}
+                  >
+                    <span>← Back to Ticket List</span>
+                  </button>
+                </div>
+
                 <div class="erp-card-header">
                   <div>
-                    <div style={{ display: "flex", "align-items": "center", gap: "0.625rem" }}>
+                    <div style={{ display: "flex", "align-items": "center", gap: "0.625rem", "flex-wrap": "wrap" }}>
                       <span class="erp-card-title">{ticket().ticket_number}</span>
                       <span class={`erp-badge ${getStatusBadge(ticket().status)}`}>{ticket().status}</span>
                       <span class={`erp-badge ${getPriorityBadge(ticket().priority)}`}>{ticket().priority} Priority</span>

@@ -95,7 +95,7 @@ export function CommandPalette(props: CommandPaletteProps): JSX.Element {
       icon: IconFieldService,
       shortcut: "⌘5",
       action: () => {
-        props.onNavigate("service");
+        props.onNavigate("field_service");
         props.onClose();
       },
     },
@@ -270,38 +270,51 @@ export function CommandPalette(props: CommandPaletteProps): JSX.Element {
   return (
     <Show when={props.isOpen}>
       <div
-        class="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
+        class="erp-modal-overlay"
         onClick={(e) => {
           if (e.target === e.currentTarget) props.onClose();
         }}
         onKeyDown={handleKeyDown}
       >
-        <div
-          class="w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] bg-[var(--bg-card,#ffffff)] text-[var(--text-main,#2d2820)]"
-          style={{ "font-family": "var(--font-sans, system-ui, sans-serif)" }}
-        >
+        <div class="erp-modal" style={{ "max-width": "580px" }}>
           {/* Search Input Bar */}
-          <div class="px-4 py-3.5 border-b border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] flex items-center gap-3 bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-            <IconSearch size={18} class="text-[var(--color-primary,#8b6f4e)] shrink-0" />
+          <div
+            style={{
+              padding: "0.75rem 1rem",
+              "border-bottom": "1px solid var(--erp-border-subtle)",
+              display: "flex",
+              "align-items": "center",
+              gap: "0.75rem",
+              background: "var(--erp-bg-card-subtle)",
+            }}
+          >
+            <IconSearch size={16} class="text-secondary" />
             <input
               type="text"
               autofocus
               value={query()}
               onInput={(e) => setQuery(e.currentTarget.value)}
-              placeholder="Search views, tax invoices, vouchers, tickets... (Type to filter)"
-              class="w-full bg-transparent text-sm text-[var(--text-main,#2d2820)] placeholder-[var(--text-muted,#7a7267)] focus:outline-none"
+              placeholder="Search views, tax invoices, vouchers, tickets..."
+              style={{
+                width: "100%",
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                "font-size": "14px",
+                color: "var(--erp-text-main)",
+              }}
             />
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono uppercase bg-black/5 dark:bg-white/10 text-[var(--text-muted,#7a7267)] border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a]">
+            <span class="erp-badge erp-badge-neutral" style={{ "font-family": "var(--font-mono)" }}>
               Esc
             </span>
           </div>
 
           {/* Results List */}
-          <div class="p-2 max-h-[60vh] overflow-y-auto space-y-1">
+          <div style={{ padding: "0.5rem", "max-height": "60vh", "overflow-y": "auto", display: "flex", "flex-direction": "column", gap: "0.25rem" }}>
             <Show
               when={filteredCommands().length > 0}
               fallback={
-                <div class="p-8 text-center text-xs text-[var(--text-muted,#7a7267)]">
+                <div style={{ padding: "2rem", "text-align": "center", "font-size": "12px", color: "var(--erp-text-muted)" }}>
                   No commands or views match "{query()}".
                 </div>
               }
@@ -315,37 +328,53 @@ export function CommandPalette(props: CommandPaletteProps): JSX.Element {
                       type="button"
                       onClick={() => cmd.action()}
                       onMouseEnter={() => setSelectedIndex(idx())}
-                      class={`w-full p-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
-                        isSelected()
-                          ? "bg-[var(--color-primary,#8b6f4e)]/10 dark:bg-[var(--color-primary,#8b6f4e)]/20 text-[var(--text-main,#2d2820)]"
-                          : "hover:bg-black/[0.02] dark:hover:bg-white/[0.02] text-[var(--text-main,#2d2820)]"
-                      }`}
+                      style={{
+                        width: "100%",
+                        padding: "0.625rem 0.75rem",
+                        "border-radius": "var(--erp-radius-sm)",
+                        display: "flex",
+                        "align-items": "center",
+                        "justify-content": "space-between",
+                        "text-align": "left",
+                        cursor: "pointer",
+                        border: "none",
+                        background: isSelected() ? "var(--erp-primary-faint)" : "transparent",
+                        color: "var(--erp-text-main)",
+                        transition: "all 0.1s ease",
+                      }}
                     >
-                      <div class="flex items-center gap-3 min-w-0">
+                      <div style={{ display: "flex", "align-items": "center", gap: "0.75rem", "min-width": 0 }}>
                         <div
-                          class={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                            isSelected()
-                              ? "bg-[var(--color-primary,#8b6f4e)] text-white"
-                              : "bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714] text-[var(--color-primary,#8b6f4e)] border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a]"
-                          }`}
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            "border-radius": "6px",
+                            display: "flex",
+                            "align-items": "center",
+                            "justify-content": "center",
+                            "flex-shrink": 0,
+                            background: isSelected() ? "#d97706" : "var(--erp-bg-card-subtle)",
+                            color: isSelected() ? "#ffffff" : "var(--erp-primary)",
+                            border: isSelected() ? "none" : "1px solid var(--erp-border-subtle)",
+                          }}
                         >
                           <Icon size={16} />
                         </div>
-                        <div class="min-w-0">
-                          <div class="text-xs font-semibold truncate flex items-center gap-2">
-                            <span>{cmd.title}</span>
-                            <span class="text-[10px] font-normal px-1.5 py-0.2 rounded bg-black/5 dark:bg-white/5 text-[var(--text-muted,#7a7267)]">
+                        <div style={{ "min-width": 0 }}>
+                          <div style={{ "font-size": "12.5px", "font-weight": "600", display: "flex", "align-items": "center", gap: "0.5rem" }}>
+                            <span style={{ overflow: "hidden", "text-overflow": "ellipsis", "white-space": "nowrap" }}>{cmd.title}</span>
+                            <span class="erp-badge erp-badge-neutral" style={{ "font-size": "9.5px", padding: "0.1rem 0.35rem" }}>
                               {cmd.category}
                             </span>
                           </div>
-                          <div class="text-[11px] text-[var(--text-muted,#7a7267)] truncate">
+                          <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)", overflow: "hidden", "text-overflow": "ellipsis", "white-space": "nowrap" }}>
                             {cmd.subtitle}
                           </div>
                         </div>
                       </div>
 
                       <Show when={cmd.shortcut}>
-                        <kbd class="ml-2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-black/5 dark:bg-white/10 text-[var(--text-muted,#7a7267)] border border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] shrink-0">
+                        <kbd class="erp-badge erp-badge-neutral" style={{ "font-family": "var(--font-mono)", "margin-left": "0.5rem", "flex-shrink": 0 }}>
                           {cmd.shortcut}
                         </kbd>
                       </Show>
@@ -357,13 +386,24 @@ export function CommandPalette(props: CommandPaletteProps): JSX.Element {
           </div>
 
           {/* Footer Guide */}
-          <div class="px-4 py-2 border-t border-[var(--border-subtle,#e8e4dc)] dark:border-[#38332a] flex items-center justify-between text-[11px] text-[var(--text-muted,#7a7267)] bg-[var(--bg-primary,#fbf9f4)] dark:bg-[#1a1714]">
-            <div class="flex items-center gap-3">
+          <div
+            style={{
+              padding: "0.5rem 1rem",
+              "border-top": "1px solid var(--erp-border-subtle)",
+              display: "flex",
+              "align-items": "center",
+              "justify-content": "space-between",
+              "font-size": "11px",
+              color: "var(--erp-text-muted)",
+              background: "var(--erp-bg-card-subtle)",
+            }}
+          >
+            <div style={{ display: "flex", "align-items": "center", gap: "0.75rem" }}>
               <span>↑↓ Navigate</span>
               <span>↵ Open</span>
               <span>Esc Close</span>
             </div>
-            <div class="font-medium text-[var(--color-primary,#8b6f4e)]">
+            <div style={{ "font-weight": "600", color: "var(--erp-primary)" }}>
               Jubilant Enterprise
             </div>
           </div>

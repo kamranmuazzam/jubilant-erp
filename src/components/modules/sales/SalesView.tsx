@@ -506,7 +506,7 @@ export function SalesView() {
             <div style={{ "font-size": "11.5px", "font-weight": "600", color: "var(--erp-text-secondary)", "text-transform": "uppercase", "letter-spacing": "0.05em", "margin-bottom": "0.6rem" }}>
               Commercial Proposal Pipeline (5 Stages)
             </div>
-            <div style={{ display: "grid", "grid-template-columns": "repeat(5, 1fr)", gap: "0.5rem" }}>
+            <div class="erp-pipeline-grid">
               <div style={{ padding: "0.5rem", background: "var(--erp-bg-card-subtle)", "border-radius": "4px", "text-align": "center" }}>
                 <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)" }}>1. Initial Pitch</div>
                 <div style={{ "font-weight": "700", "font-size": "15px", color: "var(--erp-text-main)" }}>

@@ -40,8 +40,8 @@ export function PinPad(props: PinPadProps) {
                 width: "16px",
                 height: "16px",
                 "border-radius": "50%",
-                border: "2px solid var(--primary)",
-                background: pin().length > i ? "var(--primary)" : "transparent",
+                border: "2px solid var(--erp-primary)",
+                background: pin().length > i ? "var(--erp-primary)" : "transparent",
                 transition: "all 0.15s ease",
               }}
             />
@@ -62,18 +62,21 @@ export function PinPad(props: PinPadProps) {
                 else handleDigit(key);
               }}
               style={{
-                height: "60px",
-                "font-size": "1.375rem",
+                height: "56px",
+                "font-size": "1.35rem",
                 "font-weight": "600",
-                "border-radius": "var(--radius-md)",
-                border: "1px solid var(--border-subtle)",
-                background: key === "C" || key === "⌫" ? "var(--bg-surface-elevated)" : "var(--bg-surface)",
-                color: key === "C" ? "var(--danger)" : "var(--text-main)",
+                "border-radius": "var(--erp-radius-md)",
+                border: "1px solid var(--erp-border-subtle)",
+                background: key === "C" || key === "⌫" ? "var(--erp-bg-card-subtle)" : "var(--erp-bg-card)",
+                color: key === "C" ? "var(--erp-danger)" : "var(--erp-text-main)",
                 cursor: props.isLoading ? "not-allowed" : "pointer",
                 display: "flex",
                 "align-items": "center",
                 "justify-content": "center",
                 transition: "all 0.1s ease",
+                "touch-action": "manipulation",
+                "user-select": "none",
+                "-webkit-user-select": "none",
               }}
             >
               {key}

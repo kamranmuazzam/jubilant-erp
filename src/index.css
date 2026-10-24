@@ -652,13 +652,403 @@ body {
   color: var(--erp-text-muted);
 }
 
+/* ==========================================================================
+   Android & Mobile Ergonomics & Responsive Dual-Mode Layout
+   ========================================================================== */
+
+/* Login Screen Layout */
+.erp-login-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: var(--erp-bg-canvas);
+}
+
+.erp-login-hero {
+  flex: 1;
+  background: var(--erp-bg-sidebar);
+  color: var(--erp-text-main);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3.5rem 3rem;
+  border-right: 1px solid var(--erp-border-subtle);
+}
+
+.erp-login-form-pane {
+  width: 480px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3.5rem;
+  background: var(--erp-bg-canvas);
+  overflow-y: auto;
+}
+
+.erp-login-card {
+  max-width: 360px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.erp-mobile-menu-btn,
+.erp-mobile-close-btn,
+.erp-bottom-nav,
+.erp-mobile-backdrop,
+.erp-drawer-status-strip,
+.erp-login-mobile-brand,
+.erp-service-mobile-back {
+  display: none;
+}
+
+/* Master-Detail Field Service Layout */
+.erp-service-master-detail {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 480px;
+}
+
+/* Summary Grids */
+.erp-summary-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.erp-summary-section-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Pipeline 5-Stage Funnel */
+.erp-pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+/* Mobile & Touch Viewport Rules (<= 768px for Android phones and tablets) */
+@media (max-width: 768px) {
+  /* Login Screen on Mobile */
+  .erp-login-container {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .erp-login-hero {
+    display: none !important;
+  }
+
+  .erp-login-form-pane {
+    width: 100% !important;
+    padding: 2rem 1.25rem calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    justify-content: flex-start !important;
+  }
+
+  .erp-login-mobile-brand {
+    display: flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Mobile Backdrop */
+  .erp-mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 95;
+  }
+
+  /* Mobile Hamburger & Close Buttons */
+  .erp-mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--erp-radius-sm);
+    border: 1px solid var(--erp-border-subtle);
+    background: var(--erp-bg-card-subtle);
+    color: var(--erp-text-main);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .erp-mobile-menu-btn:active {
+    transform: scale(0.95);
+  }
+
+  .erp-mobile-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--erp-radius-sm);
+    border: 1px solid var(--erp-border-subtle);
+    background: var(--erp-bg-card-subtle);
+    color: var(--erp-text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* Slide-over Sidebar Drawer on Mobile */
+  .erp-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 285px !important;
+    max-width: 85vw !important;
+    height: 100% !important;
+    z-index: 100 !important;
+    transform: translateX(-100%);
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 4px 0 28px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .erp-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  .erp-drawer-status-strip {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem !important;
+    border-bottom: 1px solid var(--erp-border-subtle) !important;
+    background: var(--erp-bg-card-subtle) !important;
+  }
+
+  /* Fixed Bottom Navigation Bar (Android Thumb Zone) */
+  .erp-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: calc(56px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    background: var(--erp-bg-card) !important;
+    border-top: 1px solid var(--erp-border-subtle) !important;
+    z-index: 85 !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.1) !important;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .erp-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--erp-text-secondary);
+    background: transparent;
+    border: none;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+  }
+
+  .erp-bottom-nav-item.active {
+    color: #d97706; /* Warm golden amber */
+    font-weight: 600;
+  }
+
+  .erp-bottom-nav-item:active {
+    transform: scale(0.92);
+  }
+
+  /* Topbar Layout on Mobile */
+  .erp-topbar {
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .erp-breadcrumb-prefix,
+  .erp-breadcrumb-sep,
+  .erp-header-fy-badge,
+  .erp-header-status-badge,
+  .erp-header-theme-label,
+  .erp-header-sync-label,
+  .erp-search-placeholder,
+  .erp-search-shortcut {
+    display: none !important;
+  }
+
+  .erp-breadcrumb-current {
+    font-size: 13.5px !important;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .erp-search-box {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: var(--erp-radius-sm) !important;
+    flex-shrink: 0;
+  }
+
+  .erp-header-theme-btn,
+  .erp-header-sync-btn {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0;
+  }
+
+  /* Content Scrolling with Android Navigation Clearance */
+  .erp-content-container {
+    padding: 0.75rem !important;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Responsive KPI Grid: 2-column mobile layout */
+  .erp-kpi-grid,
+  .erp-summary-kpi-grid,
+  .erp-pipeline-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  .erp-kpi-card {
+    padding: 0.75rem !important;
+  }
+
+  .erp-summary-section-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Master-Detail Switching in Field Service on Phone */
+  .erp-service-master-detail {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: auto !important;
+    gap: 0.75rem !important;
+  }
+
+  .erp-service-list-pane.mobile-hide {
+    display: none !important;
+  }
+
+  .erp-service-detail-pane.mobile-hide {
+    display: none !important;
+  }
+
+  .erp-service-mobile-back {
+    display: flex !important;
+  }
+
+  /* Touch-friendly Horizontal Scrolling on Data Tables */
+  .erp-table-container,
+  .erp-table-wrapper,
+  table {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Toolbar Stacking on Mobile */
+  .erp-table-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+
+  .erp-table-toolbar-left,
+  .erp-table-toolbar-right {
+    width: 100% !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Mobile Bottom Sheet Dialogs */
+  .erp-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .erp-modal,
+  .erp-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: var(--erp-radius-lg) !important;
+    border-top-right-radius: var(--erp-radius-lg) !important;
+    max-height: 88vh !important;
+    margin: 0 !important;
+    animation: erpBottomSheetIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  @keyframes erpBottomSheetIn {
+    from {
+      transform: translateY(100%);
+      opacity: 0.5;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Touch Target Ergonomics */
+  .erp-btn,
+  .erp-tab-btn,
+  .erp-nav-item {
+    min-height: 40px;
+    touch-action: manipulation;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    font-size: 16px !important; /* Prevents auto-zoom on mobile WebKit/Android */
+    min-height: 42px;
+  }
+}
+
 /* Printable Nepal Tax Invoice (कर बिजक) Layout */
 @media print {
   body {
     background: #ffffff !important;
     color: #000000 !important;
   }
-  .erp-sidebar, .erp-topbar, .erp-table-toolbar, .erp-tabs, .erp-btn, .no-print {
+  .erp-sidebar, .erp-topbar, .erp-table-toolbar, .erp-tabs, .erp-btn, .erp-bottom-nav, .no-print {
     display: none !important;
   }
   .erp-main-area, .erp-content-container, .erp-card {

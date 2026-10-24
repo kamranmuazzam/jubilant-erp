@@ -18,6 +18,9 @@ export function SignaturePad(props: SignaturePadProps) {
   const [currentStroke, setCurrentStroke] = createSignal<Point[]>([]);
 
   const startDrawing = (e: MouseEvent | TouchEvent) => {
+    if ("touches" in e) {
+      e.preventDefault();
+    }
     isDrawing = true;
     const rect = canvasRef.getBoundingClientRect();
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -35,6 +38,9 @@ export function SignaturePad(props: SignaturePadProps) {
 
   const draw = (e: MouseEvent | TouchEvent) => {
     if (!isDrawing) return;
+    if ("touches" in e) {
+      e.preventDefault();
+    }
     const rect = canvasRef.getBoundingClientRect();
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
@@ -47,7 +53,7 @@ export function SignaturePad(props: SignaturePadProps) {
       ctx.lineWidth = 2.5;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
-      ctx.strokeStyle = "#3b82f6";
+      ctx.strokeStyle = "#d97706";
       ctx.lineTo(x, y);
       ctx.stroke();
     }
@@ -79,17 +85,23 @@ export function SignaturePad(props: SignaturePadProps) {
   };
 
   onMount(() => {
-    canvasRef.width = props.width || 400;
-    canvasRef.height = props.height || 180;
+    const initDimensions = () => {
+      const rect = canvasRef.getBoundingClientRect();
+      canvasRef.width = rect.width || props.width || 380;
+      canvasRef.height = props.height || 180;
+    };
+    initDimensions();
+    window.addEventListener("resize", initDimensions);
+    onCleanup(() => window.removeEventListener("resize", initDimensions));
   });
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", gap: "0.75rem", width: "100%" }}>
       <div
         style={{
-          border: "2px dashed var(--border-subtle)",
-          "border-radius": "var(--radius-md)",
-          background: "var(--bg-surface)",
+          border: "2px dashed var(--erp-border-medium)",
+          "border-radius": "var(--erp-radius-md)",
+          background: "var(--erp-bg-card-subtle)",
           overflow: "hidden",
           display: "flex",
           "justify-content": "center",
@@ -105,17 +117,17 @@ export function SignaturePad(props: SignaturePadProps) {
           onTouchStart={startDrawing}
           onTouchMove={draw}
           onTouchEnd={stopDrawing}
-          style={{ cursor: "crosshair", width: "100%", height: "180px" }}
+          style={{ cursor: "crosshair", width: "100%", height: "180px", "touch-action": "none" }}
         />
       </div>
       <div style={{ display: "flex", "justify-content": "space-between", gap: "0.5rem" }}>
-        <button type="button" onClick={clearCanvas} class="btn btn-secondary">
+        <button type="button" onClick={clearCanvas} class="erp-btn erp-btn-secondary">
           Clear Signature
         </button>
         <button
           type="button"
           onClick={handleSave}
-          class="btn btn-primary"
+          class="erp-btn erp-btn-primary"
           disabled={points().length === 0}
         >
           Confirm Signature

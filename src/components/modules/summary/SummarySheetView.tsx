@@ -277,13 +277,7 @@ export function SummarySheetView(props: Props) {
       </div>
 
       {/* 8-Card Executive KPI Scorecard */}
-      <div
-        style={{
-          display: "grid",
-          "grid-template-columns": "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "0.85rem",
-        }}
-      >
+      <div class="erp-summary-kpi-grid">
         {/* KPI 1: Gross Sales */}
         <div
           class="erp-card"
@@ -522,7 +516,7 @@ export function SummarySheetView(props: Props) {
       </div>
 
       {/* Main Dual Grid: Formal Financial Statement Summary & Operational Health */}
-      <div style={{ display: "grid", "grid-template-columns": "repeat(auto-fit, minmax(480px, 1fr))", gap: "1.25rem" }}>
+      <div class="erp-summary-section-grid">
         
         {/* Panel 1: Executive Financial Summary Sheet Table */}
         <div class="erp-card" style={{ padding: "1.25rem", display: "flex", "flex-direction": "column", gap: "1rem" }}>

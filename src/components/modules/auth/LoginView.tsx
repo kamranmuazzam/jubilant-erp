@@ -50,27 +50,9 @@ export function LoginView(props: LoginViewProps) {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        height: "100vh",
-        width: "100vw",
-        background: "var(--erp-bg-canvas)",
-      }}
-    >
-      {/* Left Warm Editorial Brand Showcase */}
-      <div
-        style={{
-          flex: "1",
-          background: "var(--erp-bg-sidebar)",
-          color: "var(--erp-text-main)",
-          display: "flex",
-          "flex-direction": "column",
-          "justify-content": "space-between",
-          padding: "3.5rem 3rem",
-          "border-right": "1px solid var(--erp-border-subtle)",
-        }}
-      >
+    <div class="erp-login-container">
+      {/* Left Warm Editorial Brand Showcase (Desktop) */}
+      <div class="erp-login-hero">
         <div>
           <div style={{ display: "flex", "align-items": "center", gap: "0.75rem", "margin-bottom": "3rem" }}>
             <div
@@ -133,19 +115,34 @@ export function LoginView(props: LoginViewProps) {
         </div>
       </div>
 
-      {/* Right Login Form Pane */}
-      <div
-        style={{
-          width: "480px",
-          display: "flex",
-          "flex-direction": "column",
-          "justify-content": "center",
-          padding: "3.5rem",
-          background: "var(--erp-bg-canvas)",
-          "overflow-y": "auto",
-        }}
-      >
-        <div style={{ "max-width": "360px", width: "100%", margin: "0 auto" }}>
+      {/* Right Login Form Pane (Adaptive Desktop & Mobile) */}
+      <div class="erp-login-form-pane">
+        <div class="erp-login-card">
+          {/* Mobile Sleek Brand Banner (Hidden on desktop) */}
+          <div class="erp-login-mobile-brand" style={{ display: "none" }}>
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                "border-radius": "6px",
+                background: "#d97706",
+                display: "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "font-weight": "800",
+                "font-size": "18px",
+                color: "#ffffff",
+                "box-shadow": "0 2px 4px rgba(217, 119, 6, 0.2)",
+              }}
+            >
+              J
+            </div>
+            <div>
+              <div style={{ "font-weight": "700", "font-size": "16px", "letter-spacing": "-0.01em", color: "var(--erp-text-main)" }}>Jubilant ERP</div>
+              <div style={{ "font-size": "11px", color: "var(--erp-text-secondary)" }}>Nepal IRD Tax & Enterprise Suite</div>
+            </div>
+          </div>
+
           <div style={{ "margin-bottom": "2rem" }}>
             <h3 style={{ "font-size": "20px", "font-weight": "700", color: "var(--erp-text-main)", "letter-spacing": "-0.01em" }}>
               Sign in to Workstation
