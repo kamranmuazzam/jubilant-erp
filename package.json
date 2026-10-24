@@ -1,6 +1,6 @@
 {
   "name": "jubilant-erp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Jubilant ERP - Cross-Platform Serverless Enterprise Solution",
   "type": "module",
   "scripts": {

@@ -90,7 +90,7 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: 'Jubilant ERP ${{ github.ref_name }}'
           releaseBody: 'Cross-platform serverless release for macOS, Windows, and Android.'
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           uploadUpdaterJson: true
           updaterJsonPreferNsis: true
@@ -108,7 +108,7 @@ jobs:
           if [ -n "$APK_PATH" ]; then
             echo "Found APK to sign: $APK_PATH"
             echo "${{ secrets.SIGNING_KEY }}" | base64 -d > /tmp/release.keystore
-            SIGNED_APK="src-tauri/gen/android/app/build/outputs/apk/jubilant-erp-v1.0.0.apk"
+            SIGNED_APK="src-tauri/gen/android/app/build/outputs/apk/jubilant-erp-${{ github.ref_name }}.apk"
             APKSIGNER=$(find $ANDROID_HOME/build-tools -name apksigner | sort -V | tail -n 1)
             echo "Using apksigner: $APKSIGNER"
             $APKSIGNER sign --ks /tmp/release.keystore --ks-key-alias "${{ secrets.ALIAS }}" --ks-pass "pass:${{ secrets.KEY_STORE_PASSWORD }}" --key-pass "pass:${{ secrets.KEY_PASSWORD }}" --out "$SIGNED_APK" "$APK_PATH"
@@ -128,6 +128,7 @@ jobs:
           files: ${{ env.SIGNED_APK }}
           draft: false
           tag_name: ${{ github.ref_name }}
+          name: 'Jubilant ERP ${{ github.ref_name }}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -137,7 +138,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Publish Release
+      - name: Ensure Public Release
         run: |
           gh release edit "${{ github.ref_name }}" --draft=false || true
         env:
