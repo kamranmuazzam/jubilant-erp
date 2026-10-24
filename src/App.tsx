@@ -8,9 +8,11 @@ import { InventoryView } from "./components/modules/inventory/InventoryView";
 import { FieldServiceView } from "./components/modules/field_service/FieldServiceView";
 import { HrmView } from "./components/modules/hrm/HrmView";
 import { UsersView } from "./components/modules/users/UsersView";
+import { SummarySheetView } from "./components/modules/summary/SummarySheetView";
 import { ModuleErrorBoundary } from "./components/ui/ModuleErrorBoundary";
 import { UpdateBanner } from "./components/ui/UpdateBanner";
 import {
+  IconDashboard,
   IconAccounting,
   IconSales,
   IconPurchases,
@@ -27,7 +29,7 @@ import {
 
 export default function App() {
   const [currentUser, setCurrentUser] = createSignal<UserProfile | null>(null);
-  const [activeModule, setActiveModule] = createSignal<string>("accounting");
+  const [activeModule, setActiveModule] = createSignal<string>("summary");
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
 
   onMount(() => {
@@ -74,7 +76,7 @@ export default function App() {
     else if (user.role_name === "Warehouse_Officer") setActiveModule("inventory");
     else if (user.role_name === "Operation") setActiveModule("sales");
     else if (user.role_name === "HR_Manager") setActiveModule("hrm");
-    else setActiveModule("accounting");
+    else setActiveModule("summary");
   };
 
   const handleLogout = () => {
@@ -84,6 +86,7 @@ export default function App() {
 
   // RBAC Permission Check
   const hasAccess = (moduleKey: string) => {
+    if (moduleKey === "summary") return true;
     const user = currentUser();
     if (!user) return false;
     if (user.permissions.includes("*")) return true;
@@ -108,6 +111,12 @@ export default function App() {
   };
 
   const navSections = [
+    {
+      heading: "Executive Briefing",
+      items: [
+        { key: "summary", label: "Executive Summary Sheet", icon: IconDashboard },
+      ],
+    },
     {
       heading: "Financial Accounting",
       items: [
@@ -269,6 +278,11 @@ export default function App() {
           {/* Scrollable Module Body with Error Boundary */}
           <main class="erp-content-container">
             <Switch>
+              <Match when={activeModule() === "summary"}>
+                <ModuleErrorBoundary moduleName="Executive Summary Sheet">
+                  <SummarySheetView onNavigate={(mod) => setActiveModule(mod)} />
+                </ModuleErrorBoundary>
+              </Match>
               <Match when={activeModule() === "accounting"}>
                 <ModuleErrorBoundary moduleName="Accounting & Tax">
                   <AccountingView />
